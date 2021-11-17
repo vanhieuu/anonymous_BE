@@ -4,9 +4,9 @@ const Model = require('../model/user');
 const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
-const [success,setSuccess] = React.useState(false)
 dotenv.config();
 async function login(payload){
+    const [success,setSuccess] = React.useState(false)
     const username = payload.username;
     const password = payload.password;
     const foundUser = await Model.findOne({username: username});
