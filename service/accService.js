@@ -1,22 +1,23 @@
+import React from 'react';
 const dotenv = require('dotenv');
 const Model = require('../model/user');
 const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
-
+const [success,setSuccess] = React.useState(false)
 dotenv.config();
-
 async function login(payload){
     const username = payload.username;
     const password = payload.password;
     const foundUser = await Model.findOne({username: username});
     if (!foundUser || !bcrypt.compareSync(password + foundUser.salt, foundUser.hash)){
-        return { message:'Username or password are wrong' };
+        return { message:'Username or password are wrong',success };
     }
     else {
         const accessToken = await generateToken({_id: foundUser._id}, process.env.SECRET_KEY, process.env.accessTokenLife);
+        setSuccess(true)
         const { _id, hash, salt, role, ...user } = foundUser.toObject();
-        return { user, accessToken };
+        return { user, accessToken,  message:'Login successfully',success};
     }
 }
 
